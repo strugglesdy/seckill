@@ -20,17 +20,20 @@ public class SuccessKilledDaoTest {
 
     @Test
     public void insertSuccessKilled() throws Exception {
-        long seckillId=1000;
-        long userPhone=13476191877L;
-        int insertCount=successKilledDao.insertSuccessKilled(seckillId,userPhone);
-        System.out.println("insertCount="+insertCount);
+        /* 第一次insertCount=1
+         * 第二次insertCount=0
+         * （同一id，联合主键起作用，秒单货品号和手机号码组成联合主键）防止重复秒杀*/
+        long seckillId = 1000;
+        long userPhone = 13476191877L;
+        int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+        System.out.println("insertCount=" + insertCount);
     }
 
     @Test
     public void queryByIdWithSeckill() throws Exception {
-        long seckillId=1000L;
-        long userPhone=13476191877L;
-        SuccessKilled successKilled=successKilledDao.queryByIdWithSeckill(seckillId,userPhone);
+        long seckillId = 1000L;
+        long userPhone = 13476191877L;
+        SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
         System.out.println(successKilled);
         System.out.println(successKilled.getSeckill());
     }

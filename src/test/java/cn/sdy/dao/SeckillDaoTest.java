@@ -44,16 +44,16 @@ public class SeckillDaoTest {
         //Caused by: org.apache.ibatis.binding.BindingException: Parameter 'offset' not found. Available parameters are [1, 0, param1, param2]
         //java没有保存行参的记录，java在运行的时候会把List<Seckill> queryAll(int offset,int limit);中的参数变成这样:queryAll(int arg0,int arg1)
         List<Seckill> seckills = seckillDao.queryAll(0, 100);
-        for (Seckill seckill:seckills) {
+        for (Seckill seckill : seckills) {
             System.out.println(seckill);
         }
     }
 
     @Test
     public void reduceNumber() throws Exception {
-        long seckillId=1000;
-        Date date=new Date();
-        int updateCount=seckillDao.reduceNumber(seckillId,date);
+        long seckillId = 1000;
+        Date date = new Date();
+        int updateCount = seckillDao.reduceNumber(seckillId, date);
         System.out.println(updateCount);
     }
 
