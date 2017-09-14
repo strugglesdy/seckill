@@ -19,9 +19,10 @@ public interface SeckillService {
      * 查询全部的秒杀记录
      * @return
      */
+
     List<Seckill> getSeckillList();
     /**
-     *查询单个秒杀记录
+     * 查询单个秒杀记录
      * @param seckillId
      * @return
      */
