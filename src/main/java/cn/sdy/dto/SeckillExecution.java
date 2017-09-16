@@ -20,6 +20,16 @@ public class SeckillExecution {
     //当秒杀成功时，需要传递秒杀成功的对象回去
     private SuccessKilled successKilled;
 
+    @Override
+    public String toString() {
+        return "SeckillExecution{" +
+                "seckillId=" + seckillId +
+                ", state=" + state +
+                ", stateInfo='" + stateInfo + '\'' +
+                ", successKilled=" + successKilled +
+                '}';
+    }
+
     //秒杀成功，返回所有的信息
     public SeckillExecution(long seckillId, SeckillStatEunm statEunm, SuccessKilled successKilled) {
         this.seckillId = seckillId;

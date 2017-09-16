@@ -6,17 +6,23 @@ import cn.sdy.dto.Exposer;
 import cn.sdy.dto.SeckillExecution;
 import cn.sdy.entity.Seckill;
 import cn.sdy.entity.SuccessKilled;
+import cn.sdy.enums.SeckillStatEunm;
 import cn.sdy.exception.RepeatKillException;
 import cn.sdy.exception.SeckillCloseException;
 import cn.sdy.exception.SeckillException;
 import cn.sdy.service.SeckillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.Date;
 import java.util.List;
 
+// @Component @Service @Dao @Controller
+@Service
 public class SeckillServiceImpl implements SeckillService {
     //日志对象
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -24,9 +30,13 @@ public class SeckillServiceImpl implements SeckillService {
     //加入一个混淆字符串(秒杀接口)的salt，为了我避免用户猜出我们的md5值，值任意给，越复杂越好
     private final String salt = "adfsgdvcxqwe";
 
+    //注入Service依赖
+    @Autowired //@Resource
     private SeckillDao seckillDao;
 
+    @Autowired //@Resource
     private SuccessKilledDao successKilledDao;
+
 
     @Override
     public List<Seckill> getSeckillList() {
@@ -38,13 +48,14 @@ public class SeckillServiceImpl implements SeckillService {
         return seckillDao.queryById(seckillId);
     }
 
+    //秒杀是否开启
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
         Seckill seckill = seckillDao.queryById(seckillId);
-        if (seckill == null) {  //说明查不到这个秒杀商品的记录
+        if (seckill == null) {          //说明查不到这个秒杀商品的记录
             return new Exposer(false, seckillId);
         }
-        //如果秒杀未开启
+        //若秒杀未开启
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
         Date nowTime = new Date();
@@ -64,6 +75,12 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     //秒杀是否成功，成功：减库存，增加明细  失败：抛出异常，事务回滚
+    @Transactional
+    /**使用注解控制事务方法的优点
+     * 1.开发团队达成一致约定，明确标注事务方法的编程风格
+     * 2.保证事务方法的执行时间尽可能短，不要穿插其他网络操作RPC/HTTP请求或者剥离到事务方法外部
+     * 3.不是所有方法都需要事务，如只有一条插入修改.只读操作 不需要事务控制
+     */
     @Override
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
             throws SeckillException, RepeatKillException, SeckillCloseException {
@@ -71,7 +88,7 @@ public class SeckillServiceImpl implements SeckillService {
         if (md5 == null || !md5.equals(getMD5(seckillId))) {
             throw new SeckillException("seckill data rewrite");//秒杀数据被重写
         }
-        //执行秒杀逻辑：件库存+增加购买明细
+        //执行秒杀逻辑：减库存+增加购买明细
         Date nowTime = new Date();
         try {
             //减库存
@@ -86,9 +103,9 @@ public class SeckillServiceImpl implements SeckillService {
                 if (insertCount <= 0) {
                     throw new RepeatKillException("seckill repeated");
                 } else {
-                    //否则秒杀成功，得到成功插入的明细记录，并返回秒杀成功
+                    //否则秒杀成功，得到成功插入的明细记录，并返回成功秒杀的信息
                     SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
-                    return new SeckillExecution(seckillId, 1, "秒杀成功", successKilled);
+                    return new SeckillExecution(seckillId, SeckillStatEunm.SUCCESS, successKilled);
                 }
             }
 
@@ -98,7 +115,7 @@ public class SeckillServiceImpl implements SeckillService {
             throw e2;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            //所又编译期异常转化为运行期异常
+            //所有编译期异常转化为运行期异常
             throw new SeckillException("seckill inner error:" + e.getMessage());
         }
     }
