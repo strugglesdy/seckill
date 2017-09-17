@@ -1,8 +1,7 @@
 package cn.sdy.dto;
 
 import cn.sdy.entity.SuccessKilled;
-import cn.sdy.enums.SeckillStatEunm;
-import cn.sdy.exception.SeckillException;
+import cn.sdy.enums.SeckillStatEnum;
 
 /**
  * 封装执行秒杀后的结果:是否秒杀成功
@@ -31,7 +30,7 @@ public class SeckillExecution {
     }
 
     //秒杀成功，返回所有的信息
-    public SeckillExecution(long seckillId, SeckillStatEunm statEunm, SuccessKilled successKilled) {
+    public SeckillExecution(long seckillId, SeckillStatEnum statEunm, SuccessKilled successKilled) {
         this.seckillId = seckillId;
         this.state = statEunm.getState();
         this.stateInfo = statEunm.getInfo();
@@ -39,7 +38,7 @@ public class SeckillExecution {
     }
 
     //秒杀失败
-    public SeckillExecution(long seckillId, SeckillStatEunm statEunm) {
+    public SeckillExecution(long seckillId, SeckillStatEnum statEunm) {
         this.seckillId = seckillId;
         this.state = statEunm.getState();
         this.stateInfo = statEunm.getInfo();

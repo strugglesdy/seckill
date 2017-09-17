@@ -1,6 +1,6 @@
 package cn.sdy.dto;
 
-//将所有ajax请求返回类型，全部封装成json数据
+//将所有ajax请求返回类型，全部封装成json数据 (将返回秒杀商品地址封装为json数据的一个Vo类)
 public class SeckillResult<T> {
 
     private boolean success;

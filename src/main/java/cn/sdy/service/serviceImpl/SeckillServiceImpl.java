@@ -6,7 +6,7 @@ import cn.sdy.dto.Exposer;
 import cn.sdy.dto.SeckillExecution;
 import cn.sdy.entity.Seckill;
 import cn.sdy.entity.SuccessKilled;
-import cn.sdy.enums.SeckillStatEunm;
+import cn.sdy.enums.SeckillStatEnum;
 import cn.sdy.exception.RepeatKillException;
 import cn.sdy.exception.SeckillCloseException;
 import cn.sdy.exception.SeckillException;
@@ -105,7 +105,7 @@ public class SeckillServiceImpl implements SeckillService {
                 } else {
                     //否则秒杀成功，得到成功插入的明细记录，并返回成功秒杀的信息
                     SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
-                    return new SeckillExecution(seckillId, SeckillStatEunm.SUCCESS, successKilled);
+                    return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
                 }
             }
 

@@ -3,7 +3,7 @@ package cn.sdy.enums;
 /**
  * 使用枚举表述常量字符字段,保证了一些常用常量数据被封装在枚举类型里
  */
-public enum SeckillStatEunm {
+public enum SeckillStatEnum {
 
     SUCCESS(1, "秒杀成功"),
     END(0, "秒杀结束"),
@@ -14,7 +14,7 @@ public enum SeckillStatEunm {
     private int state;
     private String Info;
 
-    SeckillStatEunm(int state, String info) {
+    SeckillStatEnum(int state, String info) {
         this.state = state;
         Info = info;
     }
@@ -27,8 +27,8 @@ public enum SeckillStatEunm {
         return Info;
     }
 
-    public static SeckillStatEunm statOf(int index) {
-        for (SeckillStatEunm state : values()) {
+    public static SeckillStatEnum statOf(int index) {
+        for (SeckillStatEnum state : values()) {
             if (state.getState() == index) {
                 return state;
             }
