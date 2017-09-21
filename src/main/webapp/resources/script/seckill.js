@@ -86,7 +86,7 @@ var seckill = {
             }).on('finish.countdown', function () {
                 //时间完成后回调事件
                 //获取秒杀地址，控制现实逻辑，执行秒杀
-                console.log('______fininsh.countdown');
+                console.log('______finish.countdown');
                 seckill.handlerSeckill(seckillId, seckillBox);
             });
         } else {

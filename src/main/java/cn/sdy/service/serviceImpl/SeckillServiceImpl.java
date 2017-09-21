@@ -2,6 +2,7 @@ package cn.sdy.service.serviceImpl;
 
 import cn.sdy.dao.SeckillDao;
 import cn.sdy.dao.SuccessKilledDao;
+import cn.sdy.dao.cache.RedisDao;
 import cn.sdy.dto.Exposer;
 import cn.sdy.dto.SeckillExecution;
 import cn.sdy.entity.Seckill;
@@ -37,6 +38,9 @@ public class SeckillServiceImpl implements SeckillService {
     @Autowired //@Resource
     private SuccessKilledDao successKilledDao;
 
+    @Autowired
+    private RedisDao redisDao;
+
 
     @Override
     public List<Seckill> getSeckillList() {
@@ -51,10 +55,20 @@ public class SeckillServiceImpl implements SeckillService {
     //秒杀是否开启
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
-        Seckill seckill = seckillDao.queryById(seckillId);
-        if (seckill == null) {          //说明查不到这个秒杀商品的记录
-            return new Exposer(false, seckillId);
+        //优化点：缓存优化:超时的基础上维护一致性
+        //1.访问redis
+        Seckill seckill = redisDao.getSeckill(seckillId);
+        if (seckill == null) {
+            //2.访问数据库
+            seckill = seckillDao.queryById(seckillId);
+            if (seckill == null) {
+                return new Exposer(false, seckillId);
+            } else {
+                //3.放入redis
+                redisDao.putSeckill(seckill);
+            }
         }
+
         //若秒杀未开启
         Date startTime = seckill.getStartTime();
         Date endTime = seckill.getEndTime();
