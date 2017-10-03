@@ -31,7 +31,7 @@
 ![](https://github.com/strugglesdy/seckill/raw/master/images/6.png)  
 * 浏览器保存了cookies，同一手机号秒杀同一个商品时，显示重复秒杀
 ![](https://github.com/strugglesdy/seckill/raw/master/images/7.png)  
-
+ 
 * * *
 ### 个人总结
 * 在学习SSM框架时，搭建过一个简单的商品查询系统，初步认识了SSM框架。但在学习了此项目后，对SSM框架以及项目的开发流程有了更深一步的认识。
